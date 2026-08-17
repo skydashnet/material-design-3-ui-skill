@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Official Material Design 3 documentation
+    url: https://m3.material.io/
+    about: Check the current Material Design 3 specification before reporting guidance conflicts.

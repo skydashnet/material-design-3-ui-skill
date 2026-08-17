@@ -1,0 +1,59 @@
+name: Bug report
+description: Report a repository, formatting, installation, or tooling problem.
+title: '[Bug]: '
+labels:
+- bug
+body:
+- type: markdown
+  attributes:
+    value: Thanks for reporting a problem. Please include enough detail to reproduce it.
+- type: textarea
+  id: problem
+  attributes:
+    label: Problem
+    description: What went wrong?
+    placeholder: Describe the issue clearly.
+  validations:
+    required: true
+- type: textarea
+  id: steps
+  attributes:
+    label: Steps to reproduce
+    placeholder: '1. ...
+
+      2. ...
+
+      3. ...'
+  validations:
+    required: true
+- type: textarea
+  id: expected
+  attributes:
+    label: Expected behavior
+    description: What did you expect to happen?
+  validations:
+    required: true
+- type: input
+  id: environment
+  attributes:
+    label: Environment
+    description: Agent/tool/platform and version, if relevant.
+    placeholder: 'Example: Claude Code / custom agent / Android Studio / OS'
+  validations:
+    required: false
+- type: textarea
+  id: extra
+  attributes:
+    label: Additional context
+    description: Logs, screenshots, links, or other useful context.
+  validations:
+    required: false
+- type: checkboxes
+  id: checks
+  attributes:
+    label: Checklist
+    options:
+    - label: I searched existing issues for duplicates.
+      required: true
+    - label: This issue is about the repository or skill behavior, not general Material Design support.
+      required: true

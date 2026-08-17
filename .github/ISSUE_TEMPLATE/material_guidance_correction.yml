@@ -1,0 +1,49 @@
+name: Material guidance correction
+description: Report a rule that conflicts with current official Material Design 3 guidance.
+title: '[M3 Correction]: '
+labels:
+- documentation
+- material-guidance
+body:
+- type: markdown
+  attributes:
+    value: Use this form when `SKILL.md` contains outdated, inaccurate, ambiguous, or conflicting Material 3 guidance.
+- type: textarea
+  id: rule
+  attributes:
+    label: Current rule or section
+    description: Quote the shortest relevant part of SKILL.md or name the section.
+    placeholder: 'Example: Component selection → Navigation'
+  validations:
+    required: true
+- type: textarea
+  id: issue
+  attributes:
+    label: What is incorrect or outdated?
+    description: Explain the conflict and why it matters for agent behavior.
+  validations:
+    required: true
+- type: input
+  id: official_source
+  attributes:
+    label: Official source
+    description: Link to the current official Material Design, Android Developers, or Google Design guidance.
+    placeholder: https://m3.material.io/...
+  validations:
+    required: true
+- type: textarea
+  id: suggested
+  attributes:
+    label: Suggested correction
+    description: Optional replacement wording or rule.
+  validations:
+    required: false
+- type: checkboxes
+  id: checks
+  attributes:
+    label: Checklist
+    options:
+    - label: The linked source is official Google/Material/Android guidance.
+      required: true
+    - label: I checked that the issue is about Material 3 rather than Material 2.
+      required: true
