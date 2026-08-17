@@ -3,6 +3,7 @@
 > A reusable **Agent Skill** for designing, redesigning, reviewing, and implementing interfaces with **Google Material Design 3**, **Material You**, and **Material 3 Expressive** principles.
 
 [![Material Design 3](https://img.shields.io/badge/Material%20Design-3-6750A4?logo=materialdesign&logoColor=white)](https://m3.material.io/) [![Agent Skill](https://img.shields.io/badge/Agent-Skill-1F6FEB)](https://agentskills.io/) [![Accessibility](https://img.shields.io/badge/Accessibility-First-0F9D58)](https://m3.material.io/foundations/usability) [![Adaptive UI](https://img.shields.io/badge/Adaptive-UI-4285F4)](https://developer.android.com/develop/adaptive-apps) [![M3 Expressive](https://img.shields.io/badge/M3-Expressive-EA4335)](https://m3.material.io/blog/building-with-m3-expressive) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Skill Version](https://img.shields.io/badge/Skill-v1.1.0-6f42c1)](CHANGELOG.md)
 
 This repository provides a practical `SKILL.md` that teaches AI design and coding agents how to use Material Design 3 as a **real design system**—not as a collection of rounded cards, purple buttons, and Material icons.
 
@@ -185,20 +186,44 @@ DO:
 
 ```text
 .
-├── .github/
-│   ├── ISSUE_TEMPLATE/
-│   └── PULL_REQUEST_TEMPLATE.md
-├── CONTRIBUTING.md
-├── LICENSE
-├── README.md
 ├── SKILL.md
+├── skill-files.txt
+├── references/
+│   ├── accessibility.md
+│   ├── adaptive-design.md
+│   ├── anti-patterns.md
+│   ├── color-system.md
+│   ├── component-selection.md
+│   ├── feedback-and-overlays.md
+│   ├── forms-and-input.md
+│   ├── m3-expressive.md
+│   ├── motion.md
+│   ├── navigation.md
+│   ├── shape-and-elevation.md
+│   ├── spacing-and-layout.md
+│   └── typography.md
+├── tests/
+│   ├── cases/
+│   └── validate_skill.py
 ├── install.sh
 ├── install.ps1
 ├── uninstall.sh
-└── uninstall.ps1
+├── uninstall.ps1
+├── CHANGELOG.md
+├── CONTRIBUTING.md
+├── LICENSE
+└── .github/
 ```
 
-`SKILL.md` is the reusable skill definition. The installer scripts distribute that same file to supported AI-agent skill locations without changing its design rules.
+### Progressive disclosure
+
+`SKILL.md` is intentionally the **decision engine**, not a giant Material 3 textbook.
+
+It routes the agent to focused files under `references/` only when a task needs them. A navigation task can load navigation guidance; a form can load form and accessibility guidance; M3 Expressive guidance is loaded only when expression is relevant.
+
+This reduces unnecessary context while keeping detailed rules available on demand.
+
+`skill-files.txt` defines the portable skill package. The cross-agent installers copy `SKILL.md` plus every referenced package file to the selected host.
 
 ## Installation
 
@@ -232,7 +257,7 @@ The installer is filesystem-only. It does **not** install, configure, authentica
 | Hermes Agent | `~/.hermes/skills/material-design-3-ui/` |
 | OpenClaw | `${OPENCLAW_STATE_DIR:-~/.openclaw}/skills/material-design-3-ui/` |
 
-Every destination receives the same portable `SKILL.md`.
+Every destination receives the same portable skill package: `SKILL.md` plus its progressive-disclosure `references/` files.
 
 ### Clone and install
 
@@ -273,6 +298,8 @@ Detection checks the relevant CLI when available and the host's existing configu
 ```
 
 Supported names: `claude`, `codex`, `antigravity`, `kiro`, `opencode`, `hermes`, `openclaw`.
+
+> **Upgrading from v1.0:** v1.1 installs a multi-file skill package instead of only `SKILL.md`. If an older installation already exists, run the installer with `--force` / `-Force` after reviewing any local edits.
 
 ### Updating an existing installation
 
@@ -339,6 +366,24 @@ Create a developer handoff for this screen using semantic M3 tokens and exact co
 The agent should then apply the rules from `SKILL.md` instead of relying on a vague visual interpretation of Material Design.
 
 ------------------------------------------------------------------------
+
+## Testing and regression checks
+
+The repository includes both static validation and behavioral evaluation fixtures.
+
+Run the static validator:
+
+```bash
+python tests/validate_skill.py
+```
+
+It checks the skill frontmatter, reference routing, package manifest, installer coverage, repository guardrails, and evaluation fixtures.
+
+`tests/cases/` contains behavioral scenarios for settings, dashboards, adaptive navigation, form validation, M3 Expressive restraint, and fake-Material audits. These cases are designed to catch regressions in **agent decisions**, not merely Markdown formatting.
+
+GitHub Actions runs the static validator and Bash syntax checks on pushes and pull requests.
+
+---
 
 ## Design philosophy
 

@@ -16,9 +16,7 @@ $Ref = if ($env:MD3_SKILL_REF) { $env:MD3_SKILL_REF } else { "main" }
 $SkillId = "material-design-3-ui"
 $HomeDir = [Environment]::GetFolderPath("UserProfile")
 
-if (-not $HomeDir) {
-    throw "Could not determine the user home directory."
-}
+if (-not $HomeDir) { throw "Could not determine the user home directory." }
 
 $mode = "all"
 if ($Detect) { $mode = "detect" }
@@ -26,6 +24,13 @@ if ($Agent -and $Agent.Count -gt 0) { $mode = "selected" }
 if ($All) { $mode = "all" }
 
 $tempDir = $null
+
+function Assert-SafeRelativePath([string]$Path) {
+    if ([IO.Path]::IsPathRooted($Path) -or $Path -match '(^|[\\/])\.\.([\\/]|$)') {
+        throw "Unsafe path in skill-files.txt: $Path"
+    }
+}
+
 try {
     if (-not $Source) {
         $scriptPath = $MyInvocation.MyCommand.Path
@@ -37,24 +42,60 @@ try {
         }
     }
 
-    if (-not $Source) {
-        if ($Link) {
-            throw "--Link requires a local -Source or a cloned repository."
+    if ($Source) {
+        $Source = (Resolve-Path -LiteralPath $Source).Path
+        $packageRoot = Split-Path -Parent $Source
+        $manifestPath = Join-Path $packageRoot "skill-files.txt"
+        if (-not (Test-Path -LiteralPath $manifestPath -PathType Leaf)) {
+            throw "skill-files.txt was not found beside local SKILL.md."
         }
+    } else {
+        if ($Link) { throw "-Link requires a local clone or -Source." }
+
         $tempDir = Join-Path ([IO.Path]::GetTempPath()) ("md3-skill-" + [guid]::NewGuid().ToString("N"))
-        New-Item -ItemType Directory -Path $tempDir -Force | Out-Null
-        $Source = Join-Path $tempDir "SKILL.md"
-        $url = "https://raw.githubusercontent.com/$Repo/$Ref/SKILL.md"
-        Write-Host "Downloading SKILL.md from $Repo@$Ref..."
-        Invoke-WebRequest -UseBasicParsing -Uri $url -OutFile $Source
+        $packageRoot = Join-Path $tempDir "package"
+        New-Item -ItemType Directory -Path $packageRoot -Force | Out-Null
+
+        $baseUrl = "https://raw.githubusercontent.com/$Repo/$Ref"
+        $manifestPath = Join-Path $packageRoot "skill-files.txt"
+
+        Write-Host "Downloading Material Design 3 UI Skill package from $Repo@$Ref..."
+        Invoke-WebRequest -UseBasicParsing -Uri "$baseUrl/skill-files.txt" -OutFile $manifestPath
+
+        $remoteFiles = @(
+            Get-Content -LiteralPath $manifestPath |
+            ForEach-Object { $_.Trim() } |
+            Where-Object { $_ -and -not $_.StartsWith("#") }
+        )
+
+        foreach ($rel in $remoteFiles) {
+            Assert-SafeRelativePath $rel
+            $out = Join-Path $packageRoot ($rel -replace '/', [IO.Path]::DirectorySeparatorChar)
+            New-Item -ItemType Directory -Path (Split-Path -Parent $out) -Force | Out-Null
+            Invoke-WebRequest -UseBasicParsing -Uri "$baseUrl/$rel" -OutFile $out
+        }
+
+        $Source = Join-Path $packageRoot "SKILL.md"
     }
 
-    $Source = (Resolve-Path -LiteralPath $Source).Path
     $sourceText = Get-Content -LiteralPath $Source -Raw
     if ($sourceText -notmatch '(?m)^name:\s*material-design-3-ui\s*$') {
-        throw "Source does not look like the expected material-design-3-ui SKILL.md."
+        throw "Package does not contain the expected material-design-3-ui SKILL.md."
     }
-    $sourceDir = Split-Path -Parent $Source
+
+    $packageFiles = @(
+        Get-Content -LiteralPath $manifestPath |
+        ForEach-Object { $_.Trim() } |
+        Where-Object { $_ -and -not $_.StartsWith("#") }
+    )
+
+    foreach ($rel in $packageFiles) {
+        Assert-SafeRelativePath $rel
+        $p = Join-Path $packageRoot ($rel -replace '/', [IO.Path]::DirectorySeparatorChar)
+        if (-not (Test-Path -LiteralPath $p -PathType Leaf)) {
+            throw "Package file missing: $rel"
+        }
+    }
 
     function Get-Destination([string]$name) {
         switch ($name) {
@@ -90,6 +131,18 @@ try {
         }
     }
 
+    function Test-PackageSame([string]$dest) {
+        if (-not (Test-Path -LiteralPath $dest)) { return $false }
+        foreach ($rel in $packageFiles) {
+            $src = Join-Path $packageRoot ($rel -replace '/', [IO.Path]::DirectorySeparatorChar)
+            $dst = Join-Path $dest ($rel -replace '/', [IO.Path]::DirectorySeparatorChar)
+            if (-not (Test-Path -LiteralPath $dst -PathType Leaf)) { return $false }
+            if ((Get-FileHash -LiteralPath $src -Algorithm SHA256).Hash -ne
+                (Get-FileHash -LiteralPath $dst -Algorithm SHA256).Hash) { return $false }
+        }
+        return $true
+    }
+
     $allAgents = @("claude","codex","antigravity","kiro","opencode","hermes","openclaw")
     if ($mode -eq "all") {
         $targets = $allAgents
@@ -108,6 +161,7 @@ try {
     Write-Host "Material Design 3 UI Skill"
     Write-Host "OS: Windows"
     Write-Host "Mode: $mode"
+    Write-Host "Package files: $($packageFiles.Count)"
     Write-Host ""
 
     $seen = @{}
@@ -121,26 +175,15 @@ try {
         }
         $seen[$dest] = $name
 
-        $destSkill = Join-Path $dest "SKILL.md"
-
         if (Test-Path -LiteralPath $dest) {
-            $same = $false
-            if (Test-Path -LiteralPath $destSkill -PathType Leaf) {
-                $sourceHash = (Get-FileHash -LiteralPath $Source -Algorithm SHA256).Hash
-                $destHash = (Get-FileHash -LiteralPath $destSkill -Algorithm SHA256).Hash
-                $same = ($sourceHash -eq $destHash)
-            }
-
-            if ($same -and -not $Link) {
+            if ((Test-PackageSame $dest) -and -not $Link) {
                 Write-Host ("  {0,-12} already up to date  {1}" -f $name, $dest)
                 continue
             }
-
             if (-not $Force) {
                 Write-Host ("  {0,-12} skipped (exists; use -Force)  {1}" -f $name, $dest)
                 continue
             }
-
             Remove-Item -LiteralPath $dest -Recurse -Force
         }
 
@@ -148,15 +191,20 @@ try {
 
         if ($Link) {
             try {
-                New-Item -ItemType SymbolicLink -Path $dest -Target $sourceDir -Force | Out-Null
-                Write-Host ("  {0,-12} linked              {1} -> {2}" -f $name, $dest, $sourceDir)
+                New-Item -ItemType SymbolicLink -Path $dest -Target $packageRoot -Force | Out-Null
+                Write-Host ("  {0,-12} linked              {1} -> {2}" -f $name, $dest, $packageRoot)
             } catch {
-                throw "Could not create symbolic link at '$dest'. On Windows, enable Developer Mode or run with permission to create symlinks. $($_.Exception.Message)"
+                throw "Could not create symbolic link at '$dest'. Enable Windows Developer Mode or use appropriate privileges. $($_.Exception.Message)"
             }
         } else {
             New-Item -ItemType Directory -Path $dest -Force | Out-Null
-            Copy-Item -LiteralPath $Source -Destination $destSkill -Force
-            Write-Host ("  {0,-12} installed           {1}" -f $name, $dest)
+            foreach ($rel in $packageFiles) {
+                $src = Join-Path $packageRoot ($rel -replace '/', [IO.Path]::DirectorySeparatorChar)
+                $dst = Join-Path $dest ($rel -replace '/', [IO.Path]::DirectorySeparatorChar)
+                New-Item -ItemType Directory -Path (Split-Path -Parent $dst) -Force | Out-Null
+                Copy-Item -LiteralPath $src -Destination $dst -Force
+            }
+            Write-Host ("  {0,-12} installed {1} files  {2}" -f $name, $packageFiles.Count, $dest)
         }
     }
 
