@@ -183,31 +183,138 @@ DO:
 
 ## Repository structure
 
-``` text
+```text
 .
+├── .github/
+│   ├── ISSUE_TEMPLATE/
+│   └── PULL_REQUEST_TEMPLATE.md
+├── CONTRIBUTING.md
+├── LICENSE
 ├── README.md
-└── SKILL.md
+├── SKILL.md
+├── install.sh
+├── install.ps1
+├── uninstall.sh
+└── uninstall.ps1
 ```
 
-`SKILL.md` is the actual reusable skill definition. It contains the operational rules, component guidance, design workflow, review checklist, handoff contract, implementation notes, and official references.
+`SKILL.md` is the reusable skill definition. The installer scripts distribute that same file to supported AI-agent skill locations without changing its design rules.
 
-------------------------------------------------------------------------
+## Installation
 
-## Quick start
+### One command — macOS / Linux
 
-Clone the repository:
+```bash
+curl -fsSL https://raw.githubusercontent.com/skydashnet/material-design-3-ui-skill/main/install.sh | bash
+```
 
-``` bash
+### One command — Windows PowerShell
+
+```powershell
+irm https://raw.githubusercontent.com/skydashnet/material-design-3-ui-skill/main/install.ps1 | iex
+```
+
+By default, the universal installer places the skill in the global skill location for every supported host. This avoids false negatives when an IDE is installed without its CLI on `PATH`.
+
+The installer is filesystem-only. It does **not** install, configure, authenticate, or launch any AI agent.
+
+> **Security note:** Piping a remote script directly into a shell is convenient, but review the script first when that matters for your environment. The clone-and-run method below is easier to inspect and pin to a specific commit or release.
+
+### Supported agents
+
+| Agent | Global installation used by this project |
+| --- | --- |
+| Claude Code | `~/.claude/skills/material-design-3-ui/` |
+| OpenAI Codex | `~/.agents/skills/material-design-3-ui/` |
+| Google Antigravity | `~/.gemini/config/skills/material-design-3-ui/` |
+| Kiro | `~/.kiro/skills/material-design-3-ui/` |
+| OpenCode | `~/.config/opencode/skills/material-design-3-ui/` |
+| Hermes Agent | `~/.hermes/skills/material-design-3-ui/` |
+| OpenClaw | `${OPENCLAW_STATE_DIR:-~/.openclaw}/skills/material-design-3-ui/` |
+
+Every destination receives the same portable `SKILL.md`.
+
+### Clone and install
+
+```bash
 git clone https://github.com/skydashnet/material-design-3-ui-skill.git
+cd material-design-3-ui-skill
+./install.sh
 ```
 
-Then place the repository—or the folder containing `SKILL.md`—where your AI agent or Agent Skills-compatible environment loads skills.
+Windows:
 
-The exact installation path depends on the host application. Follow that application’s skill-loading documentation rather than assuming a universal directory.
+```powershell
+git clone https://github.com/skydashnet/material-design-3-ui-skill.git
+cd material-design-3-ui-skill
+.\install.ps1
+```
 
-You can also use `SKILL.md` as a standalone reference for a custom design agent, system prompt pipeline, UI review workflow, or coding agent.
+### Install only detected agents
 
-------------------------------------------------------------------------
+```bash
+./install.sh --detect
+```
+
+```powershell
+.\install.ps1 -Detect
+```
+
+Detection checks the relevant CLI when available and the host's existing configuration directory. Universal mode remains the default because it is more reliable for GUI-only installations.
+
+### Install for selected agents
+
+```bash
+./install.sh --agent claude --agent codex --agent antigravity
+```
+
+```powershell
+.\install.ps1 -Agent claude,codex,antigravity
+```
+
+Supported names: `claude`, `codex`, `antigravity`, `kiro`, `opencode`, `hermes`, `openclaw`.
+
+### Updating an existing installation
+
+The installer never silently overwrites a different existing skill directory. Re-run with force after reviewing local changes.
+
+```bash
+./install.sh --force
+```
+
+```powershell
+.\install.ps1 -Force
+```
+
+If the installed `SKILL.md` is already identical, the installer reports it as up to date and makes no change.
+
+### Symlink mode for contributors
+
+When working from a clone, link each host directly to the repository instead of copying the skill:
+
+```bash
+./install.sh --link
+```
+
+```powershell
+.\install.ps1 -Link
+```
+
+Windows symbolic links may require Developer Mode or appropriate privileges.
+
+### Uninstall
+
+```bash
+./uninstall.sh
+```
+
+```powershell
+.\uninstall.ps1
+```
+
+The uninstaller only removes the `material-design-3-ui` skill directories at the supported global destinations.
+
+---
 
 ## Example tasks
 
