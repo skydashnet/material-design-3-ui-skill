@@ -1,13 +1,70 @@
+<div align="center">
+
 # Material Design 3 UI/UX Skill
 
-> A reusable **Agent Skill** for designing, redesigning, reviewing, and implementing interfaces with **Google Material Design 3**, **Material You**, and **Material 3 Expressive** principles.
+### Design the system. Not just the screenshot.
 
-[![Material Design 3](https://img.shields.io/badge/Material%20Design-3-6750A4?logo=materialdesign&logoColor=white)](https://m3.material.io/) [![Agent Skill](https://img.shields.io/badge/Agent-Skill-1F6FEB)](https://agentskills.io/) [![Accessibility](https://img.shields.io/badge/Accessibility-First-0F9D58)](https://m3.material.io/foundations/usability) [![Adaptive UI](https://img.shields.io/badge/Adaptive-UI-4285F4)](https://developer.android.com/develop/adaptive-apps) [![M3 Expressive](https://img.shields.io/badge/M3-Expressive-EA4335)](https://m3.material.io/blog/building-with-m3-expressive) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Skill Version](https://img.shields.io/badge/Skill-v1.1.0-6f42c1)](CHANGELOG.md)
+A reusable **Agent Skill** that helps AI design and coding agents create, review, and implement interfaces using **Material Design 3**, **Material You**, and optional **Material 3 Expressive** principles.
 
-This repository provides a practical `SKILL.md` that teaches AI design and coding agents how to use Material Design 3 as a **real design system**—not as a collection of rounded cards, purple buttons, and Material icons.
+[![Material Design 3](https://img.shields.io/badge/Material_Design-3-6750A4?style=flat-square&logo=materialdesign&logoColor=white)](https://m3.material.io/) [![Skill Version](https://img.shields.io/badge/skill-v1.1.0-1f6feb?style=flat-square)](CHANGELOG.md) [![Supported Agents](https://img.shields.io/badge/agents-7-0f9d58?style=flat-square)](#supported-agents) [![GitHub stars](https://img.shields.io/github/stars/skydashnet/material-design-3-ui-skill?style=flat-square&logo=github&label=stars)](https://github.com/skydashnet/material-design-3-ui-skill/stargazers) [![GitHub forks](https://img.shields.io/github/forks/skydashnet/material-design-3-ui-skill?style=flat-square&logo=github&label=forks)](https://github.com/skydashnet/material-design-3-ui-skill/forks) [![License](https://img.shields.io/github/license/skydashnet/material-design-3-ui-skill?style=flat-square&label=license)](LICENSE)
 
-The skill turns M3 guidance into actionable rules for information architecture, visual hierarchy, semantic design tokens, component selection, adaptive layouts, interaction states, motion, accessibility, implementation handoff, and optional M3 Expressive treatment.
+**Claude Code · OpenAI Codex · Google Antigravity · Kiro · OpenCode · Hermes Agent · OpenClaw**
+
+</div>
+
+------------------------------------------------------------------------
+
+## Quick install
+
+**macOS / Linux**
+
+``` bash
+curl -fsSL https://raw.githubusercontent.com/skydashnet/material-design-3-ui-skill/main/install.sh | bash
+```
+
+**Windows PowerShell**
+
+``` powershell
+irm https://raw.githubusercontent.com/skydashnet/material-design-3-ui-skill/main/install.ps1 | iex
+```
+
+> The installer distributes the same portable skill package to the supported global agent locations. It does **not** install, authenticate, configure, or launch any AI agent.
+
+------------------------------------------------------------------------
+
+## What this skill changes
+
+| Without a design skill             | With `material-design-3-ui`                         |
+|------------------------------------|-----------------------------------------------------|
+| “Make it look Material”            | Start from user goal, hierarchy, and semantics      |
+| Rounded cards everywhere           | Use containment only when it has a purpose          |
+| Components chosen by appearance    | Components chosen by behavior                       |
+| Random hex values                  | Semantic Material color roles and tokens            |
+| Mobile UI stretched to desktop     | Adaptive structure for the available window         |
+| Accessibility checked at the end   | Accessibility treated as a release requirement      |
+| “Expressive” means more decoration | Expression used selectively to strengthen hierarchy |
+
+This is not a collection of pretty defaults. It is a **decision system for AI agents**.
+
+------------------------------------------------------------------------
+
+## Highlights
+
+- **Progressive disclosure** — a compact `SKILL.md` routes agents to 13 focused references only when needed.
+- **Semantic component rules** — buttons, FABs, chips, navigation, forms, feedback, surfaces, and more are selected by purpose.
+- **Adaptive by design** — compact through extra-large windows, multi-pane layouts, foldables, resizable windows, and edge-to-edge behavior.
+- **Accessibility-first** — contrast, touch targets, focus, keyboard, semantics, text scaling, localization, and reduced motion.
+- **M3 Expressive with restraint** — color, shape, size, motion, containment, and typography are used intentionally.
+- **Cross-agent distribution** — one package for 7 supported AI agents on Windows, macOS, and Linux.
+- **Regression checks** — static validation plus behavioral evaluation cases help prevent rule regressions.
+
+> **Core idea:** Material Design 3 is a semantic, adaptive, accessible design system—not a rounded-card aesthetic.
+
+------------------------------------------------------------------------
+
+## Explore
+
+[**Why it exists**](#why-this-exists) · [**Coverage**](#what-the-skill-covers) · [**Architecture**](#repository-structure) · [**Install options**](#installation) · [**Examples**](#example-tasks) · [**Tests**](#testing-and-regression-checks) · [**Contributing**](#contributing)
 
 ------------------------------------------------------------------------
 
@@ -184,7 +241,7 @@ DO:
 
 ## Repository structure
 
-```text
+``` text
 .
 ├── SKILL.md
 ├── skill-files.txt
@@ -227,17 +284,7 @@ This reduces unnecessary context while keeping detailed rules available on deman
 
 ## Installation
 
-### One command — macOS / Linux
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/skydashnet/material-design-3-ui-skill/main/install.sh | bash
-```
-
-### One command — Windows PowerShell
-
-```powershell
-irm https://raw.githubusercontent.com/skydashnet/material-design-3-ui-skill/main/install.ps1 | iex
-```
+The fastest install commands are shown at the top of this README. The options below cover selective installation, upgrades, symlinks, and uninstalling.
 
 By default, the universal installer places the skill in the global skill location for every supported host. This avoids false negatives when an IDE is installed without its CLI on `PATH`.
 
@@ -247,21 +294,21 @@ The installer is filesystem-only. It does **not** install, configure, authentica
 
 ### Supported agents
 
-| Agent | Global installation used by this project |
-| --- | --- |
-| Claude Code | `~/.claude/skills/material-design-3-ui/` |
-| OpenAI Codex | `~/.agents/skills/material-design-3-ui/` |
-| Google Antigravity | `~/.gemini/config/skills/material-design-3-ui/` |
-| Kiro | `~/.kiro/skills/material-design-3-ui/` |
-| OpenCode | `~/.config/opencode/skills/material-design-3-ui/` |
-| Hermes Agent | `~/.hermes/skills/material-design-3-ui/` |
-| OpenClaw | `${OPENCLAW_STATE_DIR:-~/.openclaw}/skills/material-design-3-ui/` |
+| Agent              | Global installation used by this project                          |
+|--------------------|-------------------------------------------------------------------|
+| Claude Code        | `~/.claude/skills/material-design-3-ui/`                          |
+| OpenAI Codex       | `~/.agents/skills/material-design-3-ui/`                          |
+| Google Antigravity | `~/.gemini/config/skills/material-design-3-ui/`                   |
+| Kiro               | `~/.kiro/skills/material-design-3-ui/`                            |
+| OpenCode           | `~/.config/opencode/skills/material-design-3-ui/`                 |
+| Hermes Agent       | `~/.hermes/skills/material-design-3-ui/`                          |
+| OpenClaw           | `${OPENCLAW_STATE_DIR:-~/.openclaw}/skills/material-design-3-ui/` |
 
 Every destination receives the same portable skill package: `SKILL.md` plus its progressive-disclosure `references/` files.
 
 ### Clone and install
 
-```bash
+``` bash
 git clone https://github.com/skydashnet/material-design-3-ui-skill.git
 cd material-design-3-ui-skill
 ./install.sh
@@ -269,7 +316,7 @@ cd material-design-3-ui-skill
 
 Windows:
 
-```powershell
+``` powershell
 git clone https://github.com/skydashnet/material-design-3-ui-skill.git
 cd material-design-3-ui-skill
 .\install.ps1
@@ -277,23 +324,23 @@ cd material-design-3-ui-skill
 
 ### Install only detected agents
 
-```bash
+``` bash
 ./install.sh --detect
 ```
 
-```powershell
+``` powershell
 .\install.ps1 -Detect
 ```
 
-Detection checks the relevant CLI when available and the host's existing configuration directory. Universal mode remains the default because it is more reliable for GUI-only installations.
+Detection checks the relevant CLI when available and the host’s existing configuration directory. Universal mode remains the default because it is more reliable for GUI-only installations.
 
 ### Install for selected agents
 
-```bash
+``` bash
 ./install.sh --agent claude --agent codex --agent antigravity
 ```
 
-```powershell
+``` powershell
 .\install.ps1 -Agent claude,codex,antigravity
 ```
 
@@ -305,11 +352,11 @@ Supported names: `claude`, `codex`, `antigravity`, `kiro`, `opencode`, `hermes`,
 
 The installer never silently overwrites a different existing skill directory. Re-run with force after reviewing local changes.
 
-```bash
+``` bash
 ./install.sh --force
 ```
 
-```powershell
+``` powershell
 .\install.ps1 -Force
 ```
 
@@ -319,11 +366,11 @@ If the installed `SKILL.md` is already identical, the installer reports it as up
 
 When working from a clone, link each host directly to the repository instead of copying the skill:
 
-```bash
+``` bash
 ./install.sh --link
 ```
 
-```powershell
+``` powershell
 .\install.ps1 -Link
 ```
 
@@ -331,17 +378,17 @@ Windows symbolic links may require Developer Mode or appropriate privileges.
 
 ### Uninstall
 
-```bash
+``` bash
 ./uninstall.sh
 ```
 
-```powershell
+``` powershell
 .\uninstall.ps1
 ```
 
 The uninstaller only removes the `material-design-3-ui` skill directories at the supported global destinations.
 
----
+------------------------------------------------------------------------
 
 ## Example tasks
 
@@ -373,7 +420,7 @@ The repository includes both static validation and behavioral evaluation fixture
 
 Run the static validator:
 
-```bash
+``` bash
 python tests/validate_skill.py
 ```
 
@@ -383,7 +430,7 @@ It checks the skill frontmatter, reference routing, package manifest, installer 
 
 GitHub Actions runs the static validator and Bash syntax checks on pushes and pull requests.
 
----
+------------------------------------------------------------------------
 
 ## Design philosophy
 
