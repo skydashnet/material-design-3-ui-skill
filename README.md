@@ -360,7 +360,7 @@ The installer never silently overwrites a different existing skill directory. Re
 .\install.ps1 -Force
 ```
 
-If the installed `SKILL.md` is already identical, the installer reports it as up to date and makes no change.
+If an existing copied installation has identical package files, the installer reports it as up to date. Changes to any reference require `--force` / `-Force` to replace it. Switching from a symlink to a copy also requires force, even when the files match.
 
 ### Symlink mode for contributors
 

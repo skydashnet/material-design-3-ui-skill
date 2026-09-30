@@ -86,6 +86,24 @@ download() {
   fi
 }
 
+check_package_path() {
+  local rel="$1" part path="${PACKAGE_ROOT}"
+  case "$rel" in
+    ""|/*|*\\*|*:*|../*|*/../*|*/..|./*|*/./*|*/.|*//*)
+      echo "error: unsafe path in skill-files.txt: $rel" >&2
+      exit 1 ;;
+  esac
+  local -a parts
+  IFS='/' read -r -a parts <<< "$rel"
+  for part in "${parts[@]}"; do
+    path="${path}/${part}"
+    if [[ -L "$path" ]]; then
+      echo "error: symlink in skill package: $rel" >&2
+      exit 1
+    fi
+  done
+}
+
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" 2>/dev/null && pwd || true)"
 if [[ -z "${SOURCE}" && -n "${SCRIPT_DIR}" && -f "${SCRIPT_DIR}/SKILL.md" ]]; then
   SOURCE="${SCRIPT_DIR}/SKILL.md"
@@ -108,13 +126,11 @@ else
   download "${BASE_URL}/skill-files.txt" "$MANIFEST"
 
   while IFS= read -r rel || [[ -n "$rel" ]]; do
+    rel="${rel%$'\r'}"
+    rel="${rel#"${rel%%[![:space:]]*}"}"
+    rel="${rel%"${rel##*[![:space:]]}"}"
     [[ -z "$rel" || "$rel" == \#* ]] && continue
-    case "$rel" in
-      /*|../*|*/../*|*/..)
-        echo "error: unsafe path in skill-files.txt: $rel" >&2
-        exit 1
-        ;;
-    esac
+    check_package_path "$rel"
     download "${BASE_URL}/${rel}" "${PACKAGE_ROOT}/${rel}"
   done < "$MANIFEST"
 
@@ -129,13 +145,11 @@ fi
 mapfile_compat() {
   PACKAGE_FILES=()
   while IFS= read -r rel || [[ -n "$rel" ]]; do
+    rel="${rel%$'\r'}"
+    rel="${rel#"${rel%%[![:space:]]*}"}"
+    rel="${rel%"${rel##*[![:space:]]}"}"
     [[ -z "$rel" || "$rel" == \#* ]] && continue
-    case "$rel" in
-      /*|../*|*/../*|*/..)
-        echo "error: unsafe path in skill-files.txt: $rel" >&2
-        exit 1
-        ;;
-    esac
+    check_package_path "$rel"
     [[ -f "${PACKAGE_ROOT}/${rel}" ]] || { echo "error: package file missing: $rel" >&2; exit 1; }
     PACKAGE_FILES+=("$rel")
   done < "$MANIFEST"
@@ -216,7 +230,7 @@ install_copy() {
   local agent="$1" dest="$2" rel
 
   if [[ -L "$dest" || -e "$dest" ]]; then
-    if package_same "$dest"; then
+    if [[ ! -L "$dest" ]] && package_same "$dest"; then
       printf '  %-12s already up to date  %s\n' "$agent" "$dest"
       return
     fi

@@ -4,6 +4,14 @@ All notable changes to this project are documented here.
 
 The project follows semantic versioning for changes to the skill’s operational behavior.
 
+## Unreleased
+
+### Changed
+
+- Clarified product and component decision steps in `SKILL.md` for easier scanning.
+- Hardened both installers against unsafe or symlinked package paths.
+- Handled CRLF and commented manifests in the Bash installer and corrected forced symlink-to-copy updates.
+
 ## \[1.1.0\] - 2026-08-17
 
 ### Added

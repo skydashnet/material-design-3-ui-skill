@@ -26,8 +26,20 @@ if ($All) { $mode = "all" }
 $tempDir = $null
 
 function Assert-SafeRelativePath([string]$Path) {
-    if ([IO.Path]::IsPathRooted($Path) -or $Path -match '(^|[\\/])\.\.([\\/]|$)') {
+    if ([IO.Path]::IsPathRooted($Path) -or $Path -match '[\\:]|(^|/)\.{1,2}(/|$)|//|/$') {
         throw "Unsafe path in skill-files.txt: $Path"
+    }
+}
+
+function Assert-PackagePath([string]$Root, [string]$RelativePath) {
+    Assert-SafeRelativePath $RelativePath
+    $current = $Root
+    foreach ($part in $RelativePath.Split('/')) {
+        $current = Join-Path $current $part
+        $item = Get-Item -LiteralPath $current -Force -ErrorAction SilentlyContinue
+        if ($item -and ($item.Attributes -band [IO.FileAttributes]::ReparsePoint)) {
+            throw "Symlink in skill package: $RelativePath"
+        }
     }
 }
 
@@ -69,7 +81,7 @@ try {
         )
 
         foreach ($rel in $remoteFiles) {
-            Assert-SafeRelativePath $rel
+            Assert-PackagePath $packageRoot $rel
             $out = Join-Path $packageRoot ($rel -replace '/', [IO.Path]::DirectorySeparatorChar)
             New-Item -ItemType Directory -Path (Split-Path -Parent $out) -Force | Out-Null
             Invoke-WebRequest -UseBasicParsing -Uri "$baseUrl/$rel" -OutFile $out
@@ -90,7 +102,7 @@ try {
     )
 
     foreach ($rel in $packageFiles) {
-        Assert-SafeRelativePath $rel
+        Assert-PackagePath $packageRoot $rel
         $p = Join-Path $packageRoot ($rel -replace '/', [IO.Path]::DirectorySeparatorChar)
         if (-not (Test-Path -LiteralPath $p -PathType Leaf)) {
             throw "Package file missing: $rel"
@@ -176,7 +188,9 @@ try {
         $seen[$dest] = $name
 
         if (Test-Path -LiteralPath $dest) {
-            if ((Test-PackageSame $dest) -and -not $Link) {
+            $existing = Get-Item -LiteralPath $dest -Force
+            $isLink = [bool]($existing.Attributes -band [IO.FileAttributes]::ReparsePoint)
+            if ((Test-PackageSame $dest) -and -not $Link -and -not $isLink) {
                 Write-Host ("  {0,-12} already up to date  {1}" -f $name, $dest)
                 continue
             }

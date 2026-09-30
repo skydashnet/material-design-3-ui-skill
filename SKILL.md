@@ -86,13 +86,18 @@ Follow this order unless the task explicitly scopes one stage.
 
 ### 1. Understand the product
 
-Identify: - platform, - primary user goal, - primary action, - top-level destinations, - content hierarchy, - data density, - input methods, - brand constraints, - required states and edge cases, - target window sizes, - whether M3 Expressive is desired or appropriate.
+Identify the platform, primary user goal and action, top-level destinations, content hierarchy, data density, input methods, brand constraints, required states and edge cases, target window sizes, and whether M3 Expressive is appropriate.
 
 If missing information does not block the work, make a conservative M3-aligned assumption and state it. Ask only when the missing information materially changes architecture or interaction.
 
 ### 2. Establish information architecture
 
-Before styling: - group related information, - separate navigation from actions, - identify the primary task per screen, - remove duplicated controls, - define progressive disclosure, - separate destructive actions, - avoid showing information merely because space is available.
+Before styling:
+
+- Group related information and identify the primary task per screen.
+- Separate navigation from actions and distinguish destructive actions.
+- Remove duplicated controls and define progressive disclosure.
+- Avoid showing information merely because space is available.
 
 ### 3. Choose adaptive structure
 
@@ -116,11 +121,11 @@ Screens should depend on semantic roles rather than scattered literal values.
 
 Read `references/component-selection.md` plus specialized navigation/form/feedback references as needed.
 
-For each important control determine: 1. semantic purpose, 2. emphasis, 3. immediate vs transactional behavior, 4. interaction states, 5. accessibility behavior, 6. adaptive behavior.
+For each important control, determine its semantic purpose, emphasis, immediate or transactional behavior, interaction states, accessibility behavior, and adaptive behavior.
 
 ### 6. Define states and feedback
 
-Cover relevant: - loading, - empty, - error, - success, - disabled, - selected, - pressed, - focus, - hover, - busy/submitting.
+Cover relevant loading, empty, error, success, disabled, selected, pressed, focus, hover, and busy/submitting states.
 
 Error states must provide a recovery path.
 
