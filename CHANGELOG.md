@@ -4,7 +4,7 @@ All notable changes to this project are documented here.
 
 The project follows semantic versioning for changes to the skill’s operational behavior.
 
-## Unreleased
+## [1.1.1] - 2026-10-01
 
 ### Changed
 

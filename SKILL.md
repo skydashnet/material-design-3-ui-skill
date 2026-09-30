@@ -1,8 +1,8 @@
 ---
 description: Design, redesign, review, or implement user interfaces using Google Material Design 3 (M3), Material You, and optional Material 3 Expressive principles. Use for UI/UX screens, app flows, design systems, component selection, theming, responsive/adaptive layouts, accessibility audits, Figma-ready specifications, or developer handoff where Material Design 3 is required.
 metadata:
-  updated: 2026-08-17
-  version: 1.1.0
+  updated: 2026-10-01
+  version: 1.1.1
 name: material-design-3-ui
 ---
 

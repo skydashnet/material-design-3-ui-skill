@@ -27,8 +27,8 @@ require(frontmatter_match is not None, "SKILL.md frontmatter is malformed")
 frontmatter = frontmatter_match.group(1) if frontmatter_match else ""
 require(re.search(r"(?m)^name:\s*material-design-3-ui\s*$", frontmatter) is not None,
         "SKILL.md name must be material-design-3-ui")
-require(re.search(r"(?m)^\s*version:\s*1\.1\.0\s*$", frontmatter) is not None,
-        "SKILL.md version must be 1.1.0")
+require(re.search(r"(?m)^\s*version:\s*1\.1\.1\s*$", frontmatter) is not None,
+        "SKILL.md version must be 1.1.1")
 require(re.search(r"(?m)^description:\s*\S", frontmatter) is not None,
         "SKILL.md description is required")
 
